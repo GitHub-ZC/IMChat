@@ -2,6 +2,10 @@ const Fridendship = require("./models/Fridendship");
 const Message = require("./models/Message");
 const User = require("./models/User");
 const UsersOnline = require("./models/UsersOnline");
+const FriendGroups = require("./models/FriendGroups");
+const UserGroups = require("./models/UserGroups");
+const UserGroupsToUser = require("./models/UserGroupsToUser");
+
 
 
 
@@ -12,4 +16,7 @@ const UsersOnline = require("./models/UsersOnline");
     await Fridendship.sync();
     await Message.sync();
     await UsersOnline.sync();
+    await FriendGroups.sync();
+    await UserGroups.sync();
+    await UserGroupsToUser.sync();
 })();

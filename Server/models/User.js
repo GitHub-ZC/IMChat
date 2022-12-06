@@ -32,6 +32,11 @@ User.init({
         type: DataTypes.STRING,
         allowNull: false
     },
+    // md5 salt
+    U_Salt: {
+        type: DataTypes.STRING(150),
+        allowNull: false
+    },
     // (个性签名)
     U_SignaTure: {
         type: DataTypes.STRING(150)
