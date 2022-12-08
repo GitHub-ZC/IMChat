@@ -57,9 +57,11 @@ class Register {
         });
 
         let result = await user.save();
+        console.log(result);
 
         ctx.rest(ctx.rest({
-            data: result
+            code: 2000,
+            msg: "恭喜你，注册成功"
         }));
     }
 }

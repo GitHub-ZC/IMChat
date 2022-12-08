@@ -1,3 +1,7 @@
+/**
+ * 1.定义全局 错误 类型
+ * 2.新增rest方法，后面可以直接返回json数据
+ */
 module.exports = {
     APIError: function (code, message) {
         this.code = code || 'internal:unknown_error';
@@ -15,13 +19,7 @@ module.exports = {
                 try {
                     await next();
                 } catch (e) {
-                    // 返回错误:
-                    ctx.response.status = 400;
-                    ctx.response.type = 'application/json';
-                    ctx.response.body = {
-                        code: e.code || 'internal:unknown_error',
-                        message: e.message || ''
-                    };
+                    throw e;
                 }
             } else {
                 await next();

@@ -12,6 +12,7 @@
   "author": "ZC",
   "license": "ISC",
   "dependencies": {
+    "crypto-js": "^4.1.1",
     "ioredis": "^5.2.4",
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",

@@ -8,7 +8,7 @@ const { ParametricTest } = require('../utils/ParametricTest');
  * 注册账号
  */
 class Login {
-    static async register(ctx) {
+    static async login(ctx) {
         /**
          * telephone 手机号
          * passWord 密码
@@ -44,9 +44,15 @@ class Login {
         // sha256
         let passWd_HMAC = hmac.digest('hex');
 
-        if (passWd_HMAC === user_form_database.passWd_HMAC) {
+        if (passWd_HMAC === user_form_database.U_PassWord) {
+            const hmac_token = crypto.createHmac('sha256', new Date().getTime().toString());
+            hmac_token.update(password);
+
             ctx.rest({
-                data: result
+                data: {
+                    ...user_form_database.toJSON(),
+                    token: hmac_token.digest('hex').toString() + '&&' + user_form_database.U_ID
+                }
             });
         } else {
             throw new APIError(4003, "密码错误");

@@ -1,5 +1,7 @@
 
-
+/**
+ * 存放 socket 的集合类
+ */
 class ManageWebSocket {
     // 存放 <userID，webSocket>
     static #wSocket_Map = new Map();
