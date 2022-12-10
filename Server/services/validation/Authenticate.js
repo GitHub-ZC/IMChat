@@ -1,6 +1,8 @@
 const User = require('../../models/User');
 
-
+/**
+ * websocket的登录验证
+ */
 class Authenticate {
     #validUsers = new Map();
 

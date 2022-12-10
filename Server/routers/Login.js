@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const { APIError } = require('../middlewares/rest');
 const { ParametricTest } = require('../utils/ParametricTest');
+const redis = require('../redis');
 
 
 /**
@@ -44,14 +45,21 @@ class Login {
         // sha256
         let passWd_HMAC = hmac.digest('hex');
 
+        // 数据库中密码和传入的密码进行比对
         if (passWd_HMAC === user_form_database.U_PassWord) {
             const hmac_token = crypto.createHmac('sha256', new Date().getTime().toString());
             hmac_token.update(password);
 
+            // 生成token
+            let token = hmac_token.digest('hex').toString() + '313i&m&1203' + user_form_database.U_ID;
+
+            // 设置token的过期时间
+            redis.set(user_form_database.U_ID, token, "EX", 60 * 60 * 24);
+
             ctx.rest({
                 data: {
                     ...user_form_database.toJSON(),
-                    token: hmac_token.digest('hex').toString() + '&&' + user_form_database.U_ID
+                    token
                 }
             });
         } else {
