@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const { APIError } = require('../middlewares/rest');
 const { ParametricTest } = require('../utils/ParametricTest');
-const redis = require('../redis');
+const redis = require('../redis/Redis');
 
 
 /**
@@ -47,6 +47,8 @@ class Login {
 
         // 数据库中密码和传入的密码进行比对
         if (passWd_HMAC === user_form_database.U_PassWord) {
+            let id = await redis.get("imchat_" + user_form_database.U_ID);
+            console.log(id);
             const hmac_token = crypto.createHmac('sha256', new Date().getTime().toString());
             hmac_token.update(password);
 
@@ -54,7 +56,12 @@ class Login {
             let token = hmac_token.digest('hex').toString() + '313i&m&1203' + user_form_database.U_ID;
 
             // 设置token的过期时间
-            redis.set(user_form_database.U_ID, token, "EX", 60 * 60 * 24);
+            let b = await redis.set("imchat_" + user_form_database.U_ID, token, "EX", 60 * 60 * 24);
+
+            if(b !== 'OK') {
+                throw new APIError(4004, "登录错误");
+            }
+
 
             ctx.rest({
                 data: {

@@ -1,21 +1,13 @@
 const User = require('../../models/User');
+const redis = require('../../redis/Redis');
+
+
 
 /**
  * websocket的登录验证
  */
 class Authenticate {
-    #validUsers = new Map();
-
-    constructor() {
-        this.#validUsers.set('2018110753', '123456...');
-        this.#validUsers.set('2018110754', '123456...');
-        this.#validUsers.set('2018110755', '123456...');
-        this.#validUsers.set('2018110756', '123456...');
-        this.#validUsers.set('2018110757', '123456...');
-    }
-
-
-    checkUser(obj) {
+    static async checkUser(obj) {
         if (!obj) {
             return;
         }
@@ -27,15 +19,13 @@ class Authenticate {
         }
 
 
-        // 数据读取数据部分
-        let p = this.#validUsers.get(m.userId);
-        if (!p) {
-            return false;
-        }
+        let token = m.token;
+        let id = token.split('313i&m&1203').pop();
 
+        let redis_token = await redis.get("imchat_" + id);
 
-        // 身份信息进行验证
-        if (m.passWd == p) {
+        // token相等 验证成功
+        if(redis_token === token) {
             return true;
         }
 
@@ -43,6 +33,6 @@ class Authenticate {
     }
 }
 
-const authenticate = new Authenticate();
+// const authenticate = new Authenticate();
 
-module.exports = authenticate;
+module.exports = Authenticate;

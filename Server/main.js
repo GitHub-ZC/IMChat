@@ -57,29 +57,43 @@ class ChatServer {
     KoaApp = KoaServer.createKoaApp();
     server = http.createServer(this.KoaApp.callback());
     // 创建 WebSocket 服务器 监听在 3000 端口
-    wss = new WebSocketServer({ noServer: true });
+    wss = new WebSocketServer({ server: this.server });
 
+    heartbeat() {
+        this.isAlive = true;
+    }
+
+    interval = setInterval(() => {
+        this.wss.clients.forEach(function each(ws) {
+            if (ws.isAlive === false) return ws.terminate();
+
+            ws.isAlive = false;
+            ws.ping();
+        });
+    }, 30000);
 
     constructor() {
+        // this.server.on('upgrade', (request, socket, head) => {
+        //     // This function is not defined on purpose. Implement it with your own logic.
+        //     authenticate(request, function next(err, client) {
+        //         if (err || !client) {
+        //             socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        //             socket.destroy();
+        //             return;
+        //         }
 
-        this.server.on('upgrade', (request, socket, head) => {
-            // This function is not defined on purpose. Implement it with your own logic.
-            authenticate(request, function next(err, client) {
-                if (err || !client) {
-                    socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-                    socket.destroy();
-                    return;
-                }
-
-                this.wss.handleUpgrade(request, socket, head, (ws) => {
-                    this.wss.emit('connection', ws, request);
-                });
-            });
-        });
+        //         this.wss.handleUpgrade(request, socket, head, (ws) => {
+        //             this.wss.emit('connection', ws, request);
+        //         });
+        //     });
+        // });
 
 
         //如果有WebSocket请求接入，wss对象可以响应connection事件来处理这个WebSocket：
         this.wss.on('connection', (ws, req) => { // 在connection事件中，回调函数会传入一个WebSocket的实例，表示这个WebSocket连接
+            ws.isAlive = true;
+            ws.on('pong', heartbeat);
+
             // 客户端的IP地址
             const ip = req.socket.remoteAddress;
 
@@ -120,6 +134,11 @@ class ChatServer {
 
 
         })
+
+
+        this.wss.on('close', function close() {
+            clearInterval(this.interval);
+        });
 
     }
 

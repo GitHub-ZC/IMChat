@@ -1,8 +1,10 @@
+const _Redis = require("ioredis");
+
 class Redis {
-    static redis = new Redis({
+    static redis = new _Redis({
         host: "iecoxe.top",
         port: 6379,
-        password: "",
+        password: "12345",
         db: 3
     });
 }
