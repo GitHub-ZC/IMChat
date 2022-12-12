@@ -92,7 +92,7 @@ class ChatServer {
         //如果有WebSocket请求接入，wss对象可以响应connection事件来处理这个WebSocket：
         this.wss.on('connection', (ws, req) => { // 在connection事件中，回调函数会传入一个WebSocket的实例，表示这个WebSocket连接
             ws.isAlive = true;
-            ws.on('pong', heartbeat);
+            ws.on('pong', this.heartbeat);
 
             // 客户端的IP地址
             const ip = req.socket.remoteAddress;
@@ -100,13 +100,11 @@ class ChatServer {
             // 接收客户端信息并把信息返回发送
             ws.on('message', (message) => {
                 // 输出消息日志
-                console.info(`${ip} in ${Date.now()} INFO : ${message}`);
-
+                console.log(`${ip} in ${Date.now()} INFO : ${message}`);
                 message = JSON.parse(message);
-                // console.log(message);
 
                 let ms = new Message(message);
-                console.log(ms.toJSON());
+                // console.log(ms.toJSON());
 
                 switch (ms.getMessageType()) {
                     // 登录验证

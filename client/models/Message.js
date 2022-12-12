@@ -22,7 +22,7 @@ class Message {
     }
 
     getMessageType() {
-        return this.messageType;
+        return this.M_MessagesType;
     }
 
     toString() {

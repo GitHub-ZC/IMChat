@@ -4,6 +4,7 @@ const Message = require("../models/Message");
 const User = require("../models/User");
 const ManageWebSocket = require("../services/ManageWebSocket");
 const Authenticate = require("../services/validation/Authenticate");
+const MessageType = require("../models/MessageType");
 
 
 class LoginAuthentication {
@@ -14,15 +15,17 @@ class LoginAuthentication {
      * @param {Message} messageInstance 需要发送的消息体实例对象
      */
     static async check(webSocketServer, webSocket, messageInstance) {
-        if (Authenticate.checkUser(messageInstance.content)) {
-            const user_form_database = await User.findOne({ where: { U_ID: JSON.parse(messageInstance.content).token.split('313i&m&1203').pop() } });
-            webSocket.send((new Message({ messageType: MessageType.MESSAGE_LOGIN_SUCCEED })).toString());
+        if (await Authenticate.checkUser(messageInstance.M_Content)) {
+            const user_form_database = await User.findOne({ where: { U_ID: messageInstance.M_Content.token.split('313i&m&1203').pop() } });
+            let message = new Message({ M_MessagesType: MessageType.MESSAGE_LOGIN_SUCCEED });
+            webSocket.send(JSON.stringify(message.toJSON()));
 
             // 识别成功，把user绑定到该WebSocket对象:
             webSocket.user = user_form_database;
             ManageWebSocket.addWebSocketTowSocket_Map(user_form_database.U_ID, webSocket);
         } else {
-            webSocket.send((new Message({ messageType: MessageType.MESSAGE_LOGIN_FAIL })).toString());
+            let message = new Message({ M_MessagesType: MessageType.MESSAGE_LOGIN_FAIL });
+            webSocket.send(JSON.stringify(message.toJSON()));
             webSocket.close();
         }
     }

@@ -35,7 +35,7 @@ class ManageWebSocket {
      * @param {*} webSocket 传入用户ID对应的 webSocket
      */
     static addWebSocketTowSocket_Map(userId, webSocket) {
-        this.#wSocket_Map.set(userId, webSocket.user);
+        this.#wSocket_Map.set(userId, webSocket);
     }
 
 

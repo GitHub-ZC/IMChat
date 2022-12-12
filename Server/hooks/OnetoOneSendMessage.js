@@ -8,9 +8,11 @@ class OnetoOneSendMessage {
      * @param {Message} messageInstance 传入消息实例参数
      */
     static sendToOne(messageInstance) {
-        let senderWebSocket = ManageWebSocket.getWebSocketInwSocket_Map(messageInstance.getter);
+        let senderWebSocket = ManageWebSocket.getWebSocketInwSocket_Map(messageInstance.M_RecvId);
+
         if (senderWebSocket) {
-            senderWebSocket.send(messageInstance.toString());
+            console.log(`${messageInstance.M_SendId} to ${messageInstance.M_RecvId} msg : ${messageInstance.M_Content}`);
+            senderWebSocket.send(JSON.stringify(messageInstance.toJSON()));
         }
     }
 }

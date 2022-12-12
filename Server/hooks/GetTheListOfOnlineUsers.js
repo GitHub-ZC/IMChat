@@ -15,15 +15,14 @@ class GetTheListOfOnlineUsers {
         let AllOnlineUsersInfo = ManageWebSocket.getAllWebSocketInwSocket_Map();
 
         let send_Message = new Message({
-            sender: "Server",
-            getter: messageInstance.sender,
-            content: AllOnlineUsersInfo,
-            messageType: "5",
-            sendTime: Date.now()
+            M_SendId: "Server",
+            M_RecvId: messageInstance.M_SendId,
+            M_Content: AllOnlineUsersInfo,
+            M_MessagesType: "5"
         })
 
         webSocket.send(
-            send_Message.toString()
+            JSON.stringify(send_Message.toJSON())
         )
     }
 }
