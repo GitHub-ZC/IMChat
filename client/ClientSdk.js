@@ -4,7 +4,7 @@ const Message = require('./models/Message');
 
 
 class Client {
-    ws = new WebSocket('ws://localhost:3000');
+    ws = new WebSocket('ws://42.192.118.65:80');
 
     heartbeat() {
         clearTimeout(this.pingTimeout);
@@ -33,7 +33,6 @@ class Client {
 
         // 接收
         this.ws.on('message', (message) => {
-            console.log(message.toString());
             let ms = new Message(JSON.parse(message))
             if (ms.M_MessagesType === '1') {
                 console.log("登录成功");
