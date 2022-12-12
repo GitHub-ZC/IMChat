@@ -12,7 +12,7 @@ class BroadcastMessages {
     static BroadMessages(webSocketServer, webSocket, messageInstance) {
         webSocketServer.clients.forEach(function (client) {
             if (client !== webSocket && client.readyState === WebSocket.OPEN) {
-                client.send(messageInstance.toString());
+                client.send(JSON.stringify(messageInstance.toJSON()));
             }
         });
 

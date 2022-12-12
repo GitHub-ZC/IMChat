@@ -7,9 +7,9 @@ class ClientRequestsToExit {
     static exit(webSocket, messageInstance) {
         try {
             webSocket.close();
-            ManageWebSocket.removeWebSocketInwSocket_Map(webSocket.user.userId);
+            ManageWebSocket.removeWebSocketInwSocket_Map(webSocket.user.U_ID);
         } catch (error) {
-            ManageWebSocket.removeWebSocketInwSocket_Map(messageInstance.sender);
+            ManageWebSocket.removeWebSocketInwSocket_Map(messageInstance.M_SendId);
             console.log(error);
         }
     }

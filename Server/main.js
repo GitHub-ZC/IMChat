@@ -5,6 +5,7 @@ const LoginAuthentication = require('./hooks/LoginAuthentication');
 const BroadcastMessages = require('./hooks/BroadcastMessages');
 const OnetoOneSendMessage = require('./hooks/OnetoOneSendMessage');
 const GetTheListOfOnlineUsers = require('./hooks/GetTheListOfOnlineUsers');
+const ManageWebSocket = require("./services/ManageWebSocket");
 const http = require('http')
 const Koa = require('koa');
 const koaBody = require('koa-body');
@@ -66,7 +67,8 @@ class ChatServer {
     interval = setInterval(() => {
         this.wss.clients.forEach(function each(ws) {
             if (ws.isAlive === false) {
-                
+                // 从socket集合中移除当前 ws
+                ManageWebSocket.removeWebSocketInwSocket_Map(ws.user.U_ID);
                 return ws.terminate();
             };
 
@@ -76,22 +78,6 @@ class ChatServer {
     }, 30000);
 
     constructor() {
-        // this.server.on('upgrade', (request, socket, head) => {
-        //     // This function is not defined on purpose. Implement it with your own logic.
-        //     authenticate(request, function next(err, client) {
-        //         if (err || !client) {
-        //             socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-        //             socket.destroy();
-        //             return;
-        //         }
-
-        //         this.wss.handleUpgrade(request, socket, head, (ws) => {
-        //             this.wss.emit('connection', ws, request);
-        //         });
-        //     });
-        // });
-
-
         //如果有WebSocket请求接入，wss对象可以响应connection事件来处理这个WebSocket：
         this.wss.on('connection', (ws, req) => { // 在connection事件中，回调函数会传入一个WebSocket的实例，表示这个WebSocket连接
             ws.isAlive = true;
@@ -107,7 +93,6 @@ class ChatServer {
                 message = JSON.parse(message);
 
                 let ms = new Message(message);
-                // console.log(ms.toJSON());
 
                 switch (ms.getMessageType()) {
                     // 登录验证
