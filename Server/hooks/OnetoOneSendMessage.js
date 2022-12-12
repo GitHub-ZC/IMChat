@@ -11,7 +11,7 @@ class OnetoOneSendMessage {
         let senderWebSocket = ManageWebSocket.getWebSocketInwSocket_Map(messageInstance.M_RecvId);
 
         if (senderWebSocket) {
-            console.log(`${messageInstance.M_SendId} to ${messageInstance.M_RecvId} msg : ${messageInstance.M_Content}`);
+            console.log(`${messageInstance.M_SendId} send to ${messageInstance.M_RecvId} message : ${messageInstance.M_Content}`);
             senderWebSocket.send(JSON.stringify(messageInstance.toJSON()));
         }
     }
